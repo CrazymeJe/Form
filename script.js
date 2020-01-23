@@ -1,3 +1,5 @@
+
+
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -80,6 +82,7 @@ $("#user").on("blur", function (){
     });
 });
 
+var pendente = false;
 
 $(".input").keyup(function () {
     var value = $(this).val().trim();
@@ -92,25 +95,32 @@ $("#mail").on("input", function () {
    var el = $(this);
 
    if (validateEmail(email)) {
-       $.post(
-           "form/email.php",
-           {
-               email: email
-           },
-           function (data) {
-               if (!data.valid) {
-                   el.removeClass("is-valid");
-                   el.addClass("is-invalid");
-               } else {
-                   el.removeClass("is-invalid");
-                   el.addClass("is-valid");
-               }
-           },
-           "json"
-       );
+       if (!pendente) {
+            $.post(
+                "form/email.php",
+                {
+                    email: email
+                },
+                function (data) {
+                    if (!data.valid) {
+                        el.removeClass("is-valid");
+                        el.addClass("is-invalid");
+                    } else {
+                        el.removeClass("is-invalid");
+                        el.addClass("is-valid");
+                    }
+
+                    pendente = false;
+                },
+                "json"
+            );
+
+            pendente = true;
+        }
    } else {
        el.removeClass("is-valid");
        el.addClass("is-invalid");
    }
+   
     
 });
