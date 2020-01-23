@@ -79,3 +79,38 @@ $("#user").on("blur", function (){
         dataType: "json"
     });
 });
+
+
+$(".input").keyup(function () {
+    var value = $(this).val().trim();
+    $(this).val(value);
+})
+
+$("#mail").on("input", function () {
+
+   var email = $(this).val().trim();
+   var el = $(this);
+
+   if (validateEmail(email)) {
+       $.post(
+           "form/email.php",
+           {
+               email: email
+           },
+           function (data) {
+               if (!data.valid) {
+                   el.removeClass("is-valid");
+                   el.addClass("is-invalid");
+               } else {
+                   el.removeClass("is-invalid");
+                   el.addClass("is-valid");
+               }
+           },
+           "json"
+       );
+   } else {
+       el.removeClass("is-valid");
+       el.addClass("is-invalid");
+   }
+    
+});
